@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tomee>
+
+
+  <!-- MySQL Database -->
+  <Resource id="OrdersDataSource" type="DataSource">
+      JdbcDriver = com.mysql.cj.jdbc.Driver
+      JdbcUrl = jdbc:mysql://localhost:3306/orders
+      UserName = root
+      Password = 0000
+      InitialSize = 1
+      MaxActive = 10
+      MaxWaitTime = 10 seconds
+      MaxIdle = 2
+      MinIdle = 1
+      ValidationQuery = SELECT 1
+      TestOnBorrow = true
+      TestWhileIdle = true
+      TimeBetweenEvictionRuns = 2 min
+      removeAbandoned = true
+      removeAbandonedTimeout = 600
+      logAbandoned = true
+      jmxEnabled = true
+  </Resource>
+
+</tomee>
