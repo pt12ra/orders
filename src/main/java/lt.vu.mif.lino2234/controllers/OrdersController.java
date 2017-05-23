@@ -21,8 +21,7 @@ import java.util.concurrent.Future;
 public class OrdersController implements Serializable {
 
     @Inject private OrderBo orderBo;
-    @Inject
-    AsyncCalculatorBo asyncCalculatorBo;
+    @Inject private AsyncCalculatorBo asyncCalculatorBo;
 
     @Getter private OrderView selectedOrder = new OrderView();
     @Getter private OrderView conflictingOrder;
@@ -34,15 +33,11 @@ public class OrdersController implements Serializable {
     public void callAsyncMethod() throws ExecutionException, InterruptedException {
         if (resultInFuture == null) {
             resultInFuture = asyncCalculatorBo.asyncMethod();
-            count =  "I just have started counting entities " + resultInFuture.isDone();
+            count =  "I just have started counting entities";
         } else {
-            if (resultInFuture.isDone()) {
-                String result = resultInFuture.get().toString();
-                resultInFuture = null;
-                count =  "Result is finally ready, and it is: " + result;
-            } else {
-                count =  "Result is not yet ready... please wait a moment...";
-            }
+            String result = resultInFuture.get().toString();
+            resultInFuture = null;
+            count =  "Result is finally ready, and it is: " + result;
         }
     }
 

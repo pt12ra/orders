@@ -10,4 +10,5 @@ public interface OrderBo {
     OrderView findOne(Long id);
     void delete(Long id);
     List<OrderView> getAll();
+    OrderView createEntity(String author, String title);
 }

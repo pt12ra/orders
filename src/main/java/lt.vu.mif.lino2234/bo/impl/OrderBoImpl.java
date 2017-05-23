@@ -5,10 +5,12 @@ import lt.vu.mif.lino2234.dao.OrderDao;
 import lt.vu.mif.lino2234.entities.Order;
 import lt.vu.mif.lino2234.views.OrderView;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -16,11 +18,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Named(value = "orderBo")
-@RequestScoped
-public class OrderBoImpl implements OrderBo {
+@ConversationScoped
+public class OrderBoImpl implements OrderBo, Serializable {
     
     @Inject
-    private OrderDao orderDao;
+    protected OrderDao orderDao;
 
     @Inject AsyncCalculatorBo asyncCalculatorBo;
 
@@ -29,16 +31,20 @@ public class OrderBoImpl implements OrderBo {
     public OrderView saveToEntity(OrderView view) {
         Objects.requireNonNull(view, "Object 'view' must not be null");
 
-        Order entity = view.getId() != null ? orderDao.findOne(view.getId()) : new Order();
-        entity.setId(view.getId());
-        entity.setAuthor(view.getAuthor());
-        entity.setTitle(view.getTitle());
-        entity.setComment(view.getComment());
-        entity.setQuantity(view.getQuantity());
-        entity.setPrice(view.getPrice());
-        entity.setLastChanged(LocalDateTime.now());
-        entity.setOptLockVersion(view.getOptLockVersion());
-        return buildOrderView(entity.getId() == null ? orderDao.save(entity) : orderDao.update(entity));
+        try {
+            Order entity = view.getId() != null ? orderDao.findOne(view.getId()) : new Order();
+            entity.setId(view.getId());
+            entity.setAuthor(view.getAuthor());
+            entity.setTitle(view.getTitle());
+            entity.setComment(view.getComment());
+            entity.setQuantity(view.getQuantity());
+            entity.setPrice(view.getPrice());
+            entity.setLastChanged(LocalDateTime.now());
+            entity.setOptLockVersion(view.getOptLockVersion());
+            return buildOrderView(entity.getId() == null ? orderDao.save(entity) : orderDao.update(entity));
+        } catch (Exception e) {
+            throw new OptimisticLockException();
+        }
     }
 
     @Override
@@ -62,8 +68,24 @@ public class OrderBoImpl implements OrderBo {
     public List<OrderView> getAll() {
         return orderDao.getAll().stream().map(this::buildOrderView).collect(Collectors.toList());
     }
-    
-    private OrderView buildOrderView (Order entity) {
+
+    @Transactional
+    public OrderView createEntity(String author, String title) {
+        Objects.requireNonNull(author, "Object 'view' must not be null");
+        Objects.requireNonNull(title, "Object 'view' must not be null");
+
+        try {
+            Order entity = new Order();
+            entity.setAuthor(author);
+            entity.setTitle(title);
+            entity.setLastChanged(LocalDateTime.now());
+            return this.buildOrderView(this.orderDao.save(entity));
+        } catch (Exception e) {
+            throw new OptimisticLockException();
+        }
+    }
+
+    protected OrderView buildOrderView (Order entity) {
         Objects.requireNonNull(entity, "Object 'entity' must not be null");
 
         OrderView view = new OrderView();
@@ -77,4 +99,6 @@ public class OrderBoImpl implements OrderBo {
         view.setOptLockVersion(entity.getOptLockVersion());
         return view;
     }
+
+
 }

@@ -5,7 +5,6 @@ import lt.vu.mif.lino2234.entities.Order;
 import org.apache.deltaspike.core.api.future.Futureable;
 
 import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -18,7 +17,6 @@ import java.util.concurrent.Future;
 
 @Named
 @ApplicationScoped
-@Asynchronous
 public class AsyncCalculatorBo implements Serializable{
 
     @Inject
@@ -31,11 +29,11 @@ public class AsyncCalculatorBo implements Serializable{
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public Future<Long> asyncMethod() {
         try {
+            Thread.sleep(3000);
             CriteriaBuilder qb = em.getCriteriaBuilder();
             CriteriaQuery<Long> cq = qb.createQuery(Long.class);
             cq.select(qb.count(cq.from(Order.class)));
             count =  em.createQuery(cq).getSingleResult();
-            Thread.sleep(3000);
         } catch (InterruptedException e) {
         }
         System.out.println("Counted " + count.toString() + " entities");
