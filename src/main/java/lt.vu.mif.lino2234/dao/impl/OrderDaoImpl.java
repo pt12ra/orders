@@ -33,7 +33,9 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order update(Order entity) {
-        return em.merge(entity);
+        em.merge(entity);
+        em.flush();
+        return entity;
     }
 
     @Override

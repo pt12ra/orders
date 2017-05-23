@@ -23,6 +23,20 @@
   <url>http://maven.apache.org</url>
 
   <dependencies>
+    <!-- DeltaSpike CORE -->
+    <dependency>
+      <groupId>org.apache.deltaspike.core</groupId>
+      <artifactId>deltaspike-core-api</artifactId>
+      <version>1.7.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.deltaspike.core</groupId>
+      <artifactId>deltaspike-core-impl</artifactId>
+      <version>1.7.2</version>
+      <scope>runtime</scope>
+    </dependency>
+
     <!-- JSF add-ons -->
     <!-- http://showcase.omnifaces.org/ -->
     <dependency>

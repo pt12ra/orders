@@ -22,6 +22,8 @@ public class OrderBoImpl implements OrderBo {
     @Inject
     private OrderDao orderDao;
 
+    @Inject AsyncCalculatorBo asyncCalculatorBo;
+
     @Override
     @Transactional
     public OrderView saveToEntity(OrderView view) {

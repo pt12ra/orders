@@ -11,35 +11,38 @@
     <title>Food orders</title>
 </h:head>
 <h:body>
-    <h1>Food order requests</h1>
+    <h1>Food order req</h1>
     <h:form id="form">
-        <p:fieldset id="addition" legend="Add order" collapsed="true" toggleable="true">
+        <p:fieldset legend="Add order" collapsed="true" toggleable="true">
             <h:panelGrid id="grid" columns="3">
+                <h:panelGroup></h:panelGroup>
                 <p:outputLabel for="titleInput" value="title"/>
                 <p:inputText id="titleInput" value="#{ordersController.selectedOrder.title}" required="true"/>
-                <p:message for="titleInput"/>
+                <p:message for="titleInput" autoUpdate="true"/>
 
                 <p:outputLabel for="authorInput" value="author"/>
                 <p:inputText id="authorInput" value="#{ordersController.selectedOrder.author}" required="true"/>
-                <p:message for="authorInput"/>
+                <p:message for="authorInput" autoUpdate="true"/>
 
                 <p:outputLabel for="commentInput" value="comment"/>
                 <p:inputText id="commentInput" value="#{ordersController.selectedOrder.comment}"/>
-                <p:message for="commentInput"/>
+                <p:message for="commentInput" autoUpdate="true"/>
 
                 <p:outputLabel for="quantityInput" value="quantity"/>
                 <p:inputNumber id="quantityInput" value="#{ordersController.selectedOrder.quantity}" minValue="0"/>
-                <p:message for="quantityInput"/>
+                <p:message for="quantityInput" autoUpdate="true"/>
 
                 <p:outputLabel for="priceInput" value="price"/>
                 <p:inputNumber id="priceInput" value="#{ordersController.selectedOrder.price}" decimalPlaces="2"/>
-                <p:message for="priceInput"/>
+                <p:message for="priceInput" autoUpdate="true"/>
                 <p:commandButton value="Add"
                                  actionListener="#{ordersController.createFoodOrder()}"
-                                 update=":form:list :form:grid"/>
-                <p:messages globalOnly="true"/>
+                                 update=":listForm:list :form:grid"/>
+                <p:messages globalOnly="true" autoUpdate="true"/>
             </h:panelGrid>
         </p:fieldset>
+    </h:form>
+    <h:form id="listForm">
         <p:fieldset id="list" legend="Food orders">
             <p:dataTable value="#{ordersController.orders}" var="order">
                 <p:column headerText="Order">
@@ -59,17 +62,82 @@
                 </p:column>
                 <p:column>
                     <p:commandButton value="Edit" icon="ui-icon-pencil"
-                                     actionListener="#{ordersController.deleteOrder(order)}"
-                                     update=":form:list" />
+                                     actionListener="#{ordersController.prepareForEditing(order)}"
+                                     update=":editForm:orderDetail :listForm:list "
+                                     oncomplete="PF('orderDialog').show()">
+                        <f:param name="action" value="#{param.action}" />
+                    </p:commandButton>
                 </p:column>
                 <p:column>
                     <p:commandButton value="Remove" icon="ui-icon-trash"
                                      actionListener="#{ordersController.deleteOrder(order)}"
-                                     update=":form:list"/>
+                                     update=":listForm:list">
+                        <f:param name="action" value="#{param.action}" />
+                    </p:commandButton>
                 </p:column>
             </p:dataTable>
         </p:fieldset>
+        <b>Asynchronous calls</b><br/>
+        <h:outputText id="myText" value="#{ordersController.count}"/>
 
+        <p:remoteCommand autoRun="true" actionListener="#{ordersController.callAsyncMethod}" update="myText"/>
     </h:form>
+
+    <p:dialog header="Edit order" widgetVar="orderDialog" modal="true" closable="true" resizable="false" closeOnEscape="true">
+        <h:form id="editForm">
+            <p:outputPanel id="orderDetail">
+                <h:outputText value="No order was selected... Weird..." rendered="#{empty ordersController.selectedOrder}" />
+                <p:panelGrid  columns="3" rendered="#{not empty ordersController.selectedOrder}">
+                    <h:panelGrid id="editGrid" columns="3">
+                        <p:outputLabel for="titleEditInput" value="title"/>
+                        <p:inputText id="titleEditInput" value="#{ordersController.selectedOrder.title}" required="true"/>
+                        <p:message for="titleEditInput" autoUpdate="true"/>
+
+                        <p:outputLabel for="authorEditInput" value="author"/>
+                        <p:inputText id="authorEditInput" value="#{ordersController.selectedOrder.author}" required="true"/>
+                        <p:message for="authorEditInput" autoUpdate="true"/>
+
+                        <p:outputLabel for="commentEditInput" value="comment"/>
+                        <p:inputText id="commentEditInput" value="#{ordersController.selectedOrder.comment}"/>
+                        <p:message for="commentEditInput" autoUpdate="true"/>
+
+                        <p:outputLabel for="quantityEditInput" value="quantity"/>
+                        <p:inputNumber id="quantityEditInput" value="#{ordersController.selectedOrder.quantity}" minValue="0"/>
+                        <p:message for="quantityEditInput" autoUpdate="true"/>
+
+                        <p:outputLabel for="priceEditInput" value="price"/>
+                        <p:inputNumber id="priceEditInput" value="#{ordersController.selectedOrder.price}" decimalPlaces="2"/>
+                        <p:message for="priceEditInput" autoUpdate="true"/>
+                    </h:panelGrid>
+                </p:panelGrid>
+
+                <p:commandButton value="Update" actionListener="#{ordersController.updateSelectedOrder}"
+                                 rendered="#{empty ordersController.conflictingOrder}"
+                                 icon="ui-icon-check" style="margin-top: 1em"
+                                 update=":editForm:orderDetail :listForm:list"
+                                 oncomplete="if (args &amp;&amp; !args.validationFailed) PF('orderDialog').hide()" />
+
+                <p:panelGrid  columns="2" rendered="#{not empty ordersController.conflictingOrder}"
+                              columnClasses="label,value" styleClass="ui-noborder" style="margin-top: 1em">
+                    <f:facet name="header">Conflicting order</f:facet>
+
+                    <h:outputText value="title:"/>
+                    <h:outputText value="#{ordersController.conflictingOrder.title}"/>
+
+                    <h:outputText value="last changed by:"/>
+                    <h:outputText value="#{ordersController.conflictingOrder.author}"/>
+                    <h:outputText value="Opt. version:" />
+                    <h:outputText value="#{ordersController.conflictingOrder.optLockVersion}" style="font-weight: bold"/>
+                </p:panelGrid>
+
+                <p:commandButton value="Overwrite" actionListener="#{ordersController.overwriteOrder}"
+                                 rendered="#{not empty ordersController.conflictingOrder}"
+                                 icon="ui-icon-notice" style="margin-top: 1em"
+                                 update=":editForm:orderDetail :listForm:list"
+                                 oncomplete="if (args &amp;&amp; !args.validationFailed) PF('orderDialog').hide()" />
+            </p:outputPanel>
+        </h:form>
+    </p:dialog>
+
 </h:body>
 </html>
