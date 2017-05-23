@@ -1,44 +1,17 @@
-package lt.vu.mif.lino2234.entities;
+package lt.vu.mif.lino2234.views;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Version;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "orders")
-public class Order {
+public class OrderView {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-    @Column(name = "author")
     private String author;
-
-    @Column(name = "title")
     private String title;
-
-    @Column(name = "comment")
     private String comment;
-
-    @Column(name = "quantity")
     private Integer quantity;
-
-    @Column(name = "price")
     private BigDecimal price;
-
-    @Column(name = "last_changed")
-    private LocalDateTime lastChanged;
-
-    @Version
-    @Column(name = "opt_lock_version")
+    private String lastChanged;
     private Integer optLockVersion;
 
     public Long getId() {
@@ -89,11 +62,11 @@ public class Order {
         this.price = price;
     }
 
-    public LocalDateTime getLastChanged() {
+    public String getLastChanged() {
         return lastChanged;
     }
 
-    public void setLastChanged(LocalDateTime lastChanged) {
+    public void setLastChanged(String lastChanged) {
         this.lastChanged = lastChanged;
     }
 

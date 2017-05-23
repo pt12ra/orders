@@ -7,15 +7,69 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:o="http://omnifaces.org/ui"
 >
-<h:head/>
+<h:head>
+    <title>Food orders</title>
+</h:head>
 <h:body>
-    hello world
-    <h:form>
-        <h3 style="margin-top:0">Client</h3>
-        <p:clock />
+    <h1>Food order requests</h1>
+    <h:form id="form">
+        <p:fieldset id="addition" legend="Add order" collapsed="true" toggleable="true">
+            <h:panelGrid id="grid" columns="3">
+                <p:outputLabel for="titleInput" value="title"/>
+                <p:inputText id="titleInput" value="#{ordersController.selectedOrder.title}" required="true"/>
+                <p:message for="titleInput"/>
 
-        <h3>Server</h3>
-        <p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />
+                <p:outputLabel for="authorInput" value="author"/>
+                <p:inputText id="authorInput" value="#{ordersController.selectedOrder.author}" required="true"/>
+                <p:message for="authorInput"/>
+
+                <p:outputLabel for="commentInput" value="comment"/>
+                <p:inputText id="commentInput" value="#{ordersController.selectedOrder.comment}"/>
+                <p:message for="commentInput"/>
+
+                <p:outputLabel for="quantityInput" value="quantity"/>
+                <p:inputNumber id="quantityInput" value="#{ordersController.selectedOrder.quantity}" minValue="0"/>
+                <p:message for="quantityInput"/>
+
+                <p:outputLabel for="priceInput" value="price"/>
+                <p:inputNumber id="priceInput" value="#{ordersController.selectedOrder.price}" decimalPlaces="2"/>
+                <p:message for="priceInput"/>
+                <p:commandButton value="Add"
+                                 actionListener="#{ordersController.createFoodOrder()}"
+                                 update=":form:list :form:grid"/>
+                <p:messages globalOnly="true"/>
+            </h:panelGrid>
+        </p:fieldset>
+        <p:fieldset id="list" legend="Food orders">
+            <p:dataTable value="#{ordersController.orders}" var="order">
+                <p:column headerText="Order">
+                    <h:outputText value="#{order.title}" />
+                </p:column>
+                <p:column headerText="Quantity">
+                    <h:outputText value="#{order.quantity} " />
+                </p:column>
+                <p:column headerText="Price">
+                    <h:outputText value="#{order.price} " />
+                </p:column>
+                <p:column headerText="Last edit by">
+                    <h:outputText value="#{order.author} " />
+                </p:column>
+                <p:column headerText="Last edit time">
+                    <h:outputText value="#{order.lastChanged} " />
+                </p:column>
+                <p:column>
+                    <p:commandButton value="Edit" icon="ui-icon-pencil"
+                                     actionListener="#{ordersController.deleteOrder(order)}"
+                                     update=":form:list" />
+                </p:column>
+                <p:column>
+                    <p:commandButton value="Remove" icon="ui-icon-trash"
+                                     actionListener="#{ordersController.deleteOrder(order)}"
+                                     update=":form:list"/>
+                </p:column>
+            </p:dataTable>
+        </p:fieldset>
+
     </h:form>
 </h:body>
 </html>
