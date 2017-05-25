@@ -6,4 +6,8 @@
                       http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
     bean-discovery-mode="annotated">
 
+    <alternatives>
+        <class>lt.vu.mif.lino2234.bo.impl.OrderBoImpl</class>
+    </alternatives>
+
 </beans>

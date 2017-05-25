@@ -30,13 +30,13 @@ public class RestService {
 
     @POST
     @Path("/save")
-    public Order save( Order order) {
+    public Order save(Order order) {
         return orderBo.saveToEntity(order);
     }
 
     @PUT
     @Path("/create/{author}/{title}")
-    public Order create( @PathParam("author") String author, @PathParam("title") String title) {
+    public Order create(@PathParam("author") String author, @PathParam("title") String title) {
         return orderBo.createEntity(author, title);
     }
 }

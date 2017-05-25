@@ -4,10 +4,11 @@ import lt.vu.mif.lino2234.bo.OrderBo;
 import lt.vu.mif.lino2234.dao.OrderDao;
 import lt.vu.mif.lino2234.entities.Order;
 import lt.vu.mif.lino2234.views.OrderView;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -16,15 +17,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
-@Named(value = "orderBo")
+@Alternative
 @ConversationScoped
 public class OrderBoImpl implements OrderBo, Serializable {
 
     private static final long serialVersionUID = 2250290709240478151L;
     @Inject
     protected OrderDao orderDao;
-
-    @Inject AsyncCalculatorBo asyncCalculatorBo;
 
     @Override
     @Transactional
@@ -87,15 +86,7 @@ public class OrderBoImpl implements OrderBo, Serializable {
         Objects.requireNonNull(author, "Object 'author' must not be null");
         Objects.requireNonNull(title, "Object 'title' must not be null");
 
-        try {
-            Order entity = new Order();
-            entity.setAuthor(author);
-            entity.setTitle(title);
-            entity.setLastChanged(LocalDateTime.now());
-            return this.orderDao.save(entity);
-        } catch (Exception e) {
-            throw new OptimisticLockException();
-        }
+        throw new NotImplementedException();
     }
 
     protected OrderView buildOrderView (Order entity) {
