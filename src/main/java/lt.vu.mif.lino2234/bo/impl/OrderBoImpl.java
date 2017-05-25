@@ -15,12 +15,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Named(value = "orderBo")
 @ConversationScoped
 public class OrderBoImpl implements OrderBo, Serializable {
-    
+
+    private static final long serialVersionUID = 2250290709240478151L;
     @Inject
     protected OrderDao orderDao;
 
@@ -28,31 +28,44 @@ public class OrderBoImpl implements OrderBo, Serializable {
 
     @Override
     @Transactional
-    public OrderView saveToEntity(OrderView view) {
-        Objects.requireNonNull(view, "Object 'view' must not be null");
+    public Order saveToEntity(Order entity) {
+        Objects.requireNonNull(entity, "Object 'entity' must not be null");
 
         try {
-            Order entity = view.getId() != null ? orderDao.findOne(view.getId()) : new Order();
-            entity.setId(view.getId());
-            entity.setAuthor(view.getAuthor());
-            entity.setTitle(view.getTitle());
-            entity.setComment(view.getComment());
-            entity.setQuantity(view.getQuantity());
-            entity.setPrice(view.getPrice());
             entity.setLastChanged(LocalDateTime.now());
-            entity.setOptLockVersion(view.getOptLockVersion());
-            return buildOrderView(entity.getId() == null ? orderDao.save(entity) : orderDao.update(entity));
-        } catch (Exception e) {
-            throw new OptimisticLockException();
+            return entity.getId() == null ? orderDao.save(entity) : orderDao.update(entity);
+        } catch (OptimisticLockException e) {
+            throw e;
         }
     }
 
+//    @Override
+//    @Transactional
+//    public OrderView saveToEntity(OrderView view) {
+//        Objects.requireNonNull(view, "Object 'view' must not be null");
+//
+//        try {
+//            Order entity = view.getId() != null ? orderDao.findOne(view.getId()) : new Order();
+//            entity.setId(view.getId());
+//            entity.setAuthor(view.getAuthor());
+//            entity.setTitle(view.getTitle());
+//            entity.setComment(view.getComment());
+//            entity.setQuantity(view.getQuantity());
+//            entity.setPrice(view.getPrice());
+//            entity.setLastChanged(LocalDateTime.now());
+//            entity.setOptLockVersion(view.getOptLockVersion());
+//            return buildOrderView(entity.getId() == null ? orderDao.save(entity) : orderDao.update(entity));
+//        } catch (Exception e) {
+//            throw new OptimisticLockException();
+//        }
+//    }
+
     @Override
     @Transactional
-    public OrderView findOne(Long id) {
+    public Order findOne(Long id) {
         Objects.requireNonNull(id, "Object 'id' must not be null");
 
-        return buildOrderView(orderDao.findOne(id));
+        return orderDao.findOne(id);
     }
 
     @Override
@@ -65,21 +78,21 @@ public class OrderBoImpl implements OrderBo, Serializable {
 
     @Override
     @Transactional
-    public List<OrderView> getAll() {
-        return orderDao.getAll().stream().map(this::buildOrderView).collect(Collectors.toList());
+    public List<Order> getAll() {
+        return orderDao.getAll();
     }
 
     @Transactional
-    public OrderView createEntity(String author, String title) {
-        Objects.requireNonNull(author, "Object 'view' must not be null");
-        Objects.requireNonNull(title, "Object 'view' must not be null");
+    public Order createEntity(String author, String title) {
+        Objects.requireNonNull(author, "Object 'author' must not be null");
+        Objects.requireNonNull(title, "Object 'title' must not be null");
 
         try {
             Order entity = new Order();
             entity.setAuthor(author);
             entity.setTitle(title);
             entity.setLastChanged(LocalDateTime.now());
-            return this.buildOrderView(this.orderDao.save(entity));
+            return this.orderDao.save(entity);
         } catch (Exception e) {
             throw new OptimisticLockException();
         }

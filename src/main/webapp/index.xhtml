@@ -29,7 +29,8 @@
                 <p:message for="commentInput" autoUpdate="true"/>
 
                 <p:outputLabel for="quantityInput" value="quantity"/>
-                <p:inputNumber id="quantityInput" value="#{ordersController.selectedOrder.quantity}" minValue="0"/>
+                <p:inputNumber id="quantityInput" value="#{ordersController.selectedOrder.quantity}" minValue="0"
+                               decimalPlaces="0"/>
                 <p:message for="quantityInput" autoUpdate="true"/>
 
                 <p:outputLabel for="priceInput" value="price"/>
@@ -37,7 +38,8 @@
                 <p:message for="priceInput" autoUpdate="true"/>
                 <p:commandButton value="Add"
                                  actionListener="#{ordersController.createFoodOrder()}"
-                                 update=":listForm:list :form:grid"/>
+                                 update=":listForm:list :form:grid"
+                                 oncomplete=":listForm:rc()"/>
                 <p:messages globalOnly="true" autoUpdate="true"/>
             </h:panelGrid>
         </p:fieldset>
@@ -71,16 +73,17 @@
                 <p:column>
                     <p:commandButton value="Remove" icon="ui-icon-trash"
                                      actionListener="#{ordersController.deleteOrder(order)}"
-                                     update=":listForm:list">
+                                     update=":listForm:list"
+                                     oncomplete="rc()">
                         <f:param name="action" value="#{param.action}" />
                     </p:commandButton>
                 </p:column>
             </p:dataTable>
         </p:fieldset>
-        <b>Asynchronous calls</b><br/>
-        <h:outputText id="myText" value="#{ordersController.count}"/>
+        <b>Total orders:</b><br/>
+        <h:outputText id="countText" value="#{ordersController.count}"/>
 
-        <p:remoteCommand autoRun="true" actionListener="#{ordersController.callAsyncMethod}" update="myText"/>
+        <p:remoteCommand name="rc" autoRun="true" actionListener="#{ordersController.callAsyncMethod}" update="countText"/>
     </h:form>
 
     <p:dialog header="Edit order" widgetVar="orderDialog" modal="true" closable="true" resizable="false" closeOnEscape="true">
@@ -102,7 +105,8 @@
                         <p:message for="commentEditInput" autoUpdate="true"/>
 
                         <p:outputLabel for="quantityEditInput" value="quantity"/>
-                        <p:inputNumber id="quantityEditInput" value="#{ordersController.selectedOrder.quantity}" minValue="0"/>
+                        <p:inputNumber id="quantityEditInput" value="#{ordersController.selectedOrder.quantity}" minValue="0"
+                                       decimalPlaces="0"/>
                         <p:message for="quantityEditInput" autoUpdate="true"/>
 
                         <p:outputLabel for="priceEditInput" value="price"/>

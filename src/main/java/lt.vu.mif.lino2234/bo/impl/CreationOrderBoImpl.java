@@ -13,7 +13,7 @@ import java.util.Objects;
 public class CreationOrderBoImpl extends OrderBoImpl {
 
     @Transactional
-    public OrderView createEntity(String author, String title) {
+    public Order createEntity(String author, String title) {
         Objects.requireNonNull(author, "Object 'view' must not be null");
         Objects.requireNonNull(title, "Object 'view' must not be null");
 
@@ -22,7 +22,7 @@ public class CreationOrderBoImpl extends OrderBoImpl {
             entity.setAuthor(author);
             entity.setTitle(title);
             entity.setLastChanged(LocalDateTime.now());
-            return this.buildOrderView(this.orderDao.save(entity));
+            return this.orderDao.save(entity);
         } catch (Exception e) {
             throw new OptimisticLockException();
         }

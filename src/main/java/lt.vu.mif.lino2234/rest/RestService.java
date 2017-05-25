@@ -1,7 +1,7 @@
 package lt.vu.mif.lino2234.rest;
 
 import lt.vu.mif.lino2234.bo.OrderBo;
-import lt.vu.mif.lino2234.views.OrderView;
+import lt.vu.mif.lino2234.entities.Order;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -24,19 +24,19 @@ public class RestService {
 
     @GET
     @Path("/{orderId}")
-    public OrderView find(@PathParam("orderId") Long orderId) {
+    public Order find(@PathParam("orderId") Long orderId) {
         return orderBo.findOne(orderId);
     }
 
     @POST
     @Path("/save")
-    public OrderView save( OrderView order) {
+    public Order save( Order order) {
         return orderBo.saveToEntity(order);
     }
 
     @PUT
     @Path("/create/{author}/{title}")
-    public OrderView create( @PathParam("author") String author, @PathParam("title") String title) {
+    public Order create( @PathParam("author") String author, @PathParam("title") String title) {
         return orderBo.createEntity(author, title);
     }
 }

@@ -36,7 +36,6 @@ public class AsyncCalculatorBo implements Serializable{
             count =  em.createQuery(cq).getSingleResult();
         } catch (InterruptedException e) {
         }
-        System.out.println("Counted " + count.toString() + " entities");
 
         return new AsyncResult<>(count);
     }
