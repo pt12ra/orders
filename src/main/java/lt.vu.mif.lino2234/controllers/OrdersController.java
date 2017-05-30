@@ -1,8 +1,8 @@
 package lt.vu.mif.lino2234.controllers;
 
 import lombok.Getter;
+import lt.vu.mif.lino2234.bo.InfoCollectorBo;
 import lt.vu.mif.lino2234.bo.OrderBo;
-import lt.vu.mif.lino2234.bo.impl.AsyncCalculatorBo;
 import lt.vu.mif.lino2234.entities.Order;
 import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.context.RequestContext;
@@ -15,31 +15,21 @@ import javax.transaction.TransactionalException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 @Named
 @ViewScoped
 public class OrdersController implements Serializable {
 
     @Inject private OrderBo orderBo;
-    @Inject private AsyncCalculatorBo asyncCalculatorBo;
+    @Inject private InfoCollectorBo infoCollectorBo;
 
     @Getter private Order selectedOrder = new Order();
     @Getter private Order conflictingOrder;
     @Getter private List<Order> orders;
     @Getter private String count;
 
-    private Future<Long> resultInFuture = null;
-
     public void callAsyncMethod() throws ExecutionException, InterruptedException {
-        if (resultInFuture == null) {
-            resultInFuture = asyncCalculatorBo.asyncMethod();
-            count =  "Please wait. Counting orders";
-        } else {
-            String result = resultInFuture.get().toString();
-            resultInFuture = null;
-            count =  "Processing done: Counted " + result.toString() + " orders ";
-        }
+        count = infoCollectorBo.getInfo();
     }
 
     @PostConstruct
@@ -56,7 +46,7 @@ public class OrdersController implements Serializable {
         orders = orderBo.getAll();
         selectedOrder = new Order();
         try{
-            resultInFuture = null;
+            infoCollectorBo.resetInfo();
             callAsyncMethod();
         } catch (ExecutionException e) {
             count = "ExecutionException";

@@ -1,6 +1,7 @@
 package lt.vu.mif.lino2234.bo.impl;
 
 import lt.vu.mif.lino2234.RescueOrAsync;
+import lt.vu.mif.lino2234.bo.AsyncCalculatorBo;
 import lt.vu.mif.lino2234.entities.Order;
 import org.apache.deltaspike.core.api.future.Futureable;
 
@@ -15,9 +16,9 @@ import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.concurrent.Future;
 
-@Named
+@Named(value = "asyncCalculatorBo")
 @ApplicationScoped
-public class AsyncCalculatorBo implements Serializable{
+public class AsyncCalculatorBoImpl implements AsyncCalculatorBo, Serializable{
 
     @Inject
     @RescueOrAsync
@@ -34,8 +35,7 @@ public class AsyncCalculatorBo implements Serializable{
             CriteriaQuery<Long> cq = qb.createQuery(Long.class);
             cq.select(qb.count(cq.from(Order.class)));
             count =  em.createQuery(cq).getSingleResult();
-        } catch (InterruptedException e) {
-        }
+        } catch (InterruptedException e) {}
 
         return new AsyncResult<>(count);
     }
