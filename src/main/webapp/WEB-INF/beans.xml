@@ -6,6 +6,10 @@
                       http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
     bean-discovery-mode="annotated">
 
+    <interceptors>
+        <class>lt.vu.mif.lino2234.interceptors.InfoInterceptorImpl</class>
+    </interceptors>
+
     <decorators>
         <class>lt.vu.mif.lino2234.bo.impl.InfoCollectorBoDecorator</class>
     </decorators>

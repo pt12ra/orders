@@ -1,6 +1,7 @@
 package lt.vu.mif.lino2234.bo.impl;
 
 import lt.vu.mif.lino2234.entities.Order;
+import lt.vu.mif.lino2234.interceptors.CustomInfoInterceptor;
 import lt.vu.mif.lino2234.views.OrderView;
 
 import javax.enterprise.inject.Specializes;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@CustomInfoInterceptor
 @Specializes
 public class CreationOrderBoImpl extends OrderBoImpl {
 

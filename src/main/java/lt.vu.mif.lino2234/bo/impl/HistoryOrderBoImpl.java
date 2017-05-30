@@ -3,6 +3,7 @@ package lt.vu.mif.lino2234.bo.impl;
 import lt.vu.mif.lino2234.bo.OrderBo;
 import lt.vu.mif.lino2234.dao.OrderDao;
 import lt.vu.mif.lino2234.entities.Order;
+import lt.vu.mif.lino2234.interceptors.CustomInfoInterceptor;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.enterprise.context.ConversationScoped;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@CustomInfoInterceptor
 @Alternative
 @ConversationScoped
 public class HistoryOrderBoImpl implements OrderBo, Serializable {

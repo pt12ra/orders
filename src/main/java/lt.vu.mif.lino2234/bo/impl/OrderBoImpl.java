@@ -3,6 +3,7 @@ package lt.vu.mif.lino2234.bo.impl;
 import lt.vu.mif.lino2234.bo.OrderBo;
 import lt.vu.mif.lino2234.dao.OrderDao;
 import lt.vu.mif.lino2234.entities.Order;
+import lt.vu.mif.lino2234.interceptors.CustomInfoInterceptor;
 import lt.vu.mif.lino2234.views.OrderView;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
+@CustomInfoInterceptor
 @Alternative
 @ConversationScoped
 public class OrderBoImpl implements OrderBo, Serializable {
